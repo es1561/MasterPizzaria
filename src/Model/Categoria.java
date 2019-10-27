@@ -26,6 +26,11 @@ public class Categoria implements Subject
         this.codigo = codigo;
     }
 
+    public Categoria(String desc)
+    {
+        this.desc = desc;
+    }
+    
     public Categoria(int codigo, String desc)
     {
         this.codigo = codigo;

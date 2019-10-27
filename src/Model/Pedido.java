@@ -13,7 +13,7 @@ public class Pedido
     private int codigo;
     private Cliente cliente;
     private ObservableList<ItemPedido> itens;
-    
+
     public Pedido()
     {
     }
@@ -70,70 +70,68 @@ public class Pedido
     {
         this.itens = itens;
     }
-    
+
     private ObservableList<ItemPedido> castAll(ObservableList<Object> list)
     {
         ObservableList<ItemPedido> result = FXCollections.observableArrayList();
-        
-        for (Object object : list)
-        {
+
+        for(Object object: list)
             result.add((ItemPedido)object);
-        }
-        
+
         return result;
     }
-    
+
     public boolean insert() throws SQLException
     {
         String sql = "INSERT INTO Pedido(ped_cod, cli_cod) ";
         String values = "VALUES(?, ?)";
-        
+
         Connection connection = Banco.getInstance().getConnection();
         PreparedStatement statement = connection.prepareStatement(sql + values);
 
         statement.setInt(1, Banco.getInstance().getMaxPK("Pedido", "ped_cod") + 1);
         statement.setInt(2, cliente.getCodigo());
-        
+
         return statement.executeUpdate() > 0;
     }
-    
+
     public boolean update() throws SQLException
     {
         String sql = "UPDATE Pedido SET cli_cod = ? WHERE ped_cod = ?";
-        
+
         Connection connection = Banco.getInstance().getConnection();
         PreparedStatement statement = connection.prepareStatement(sql);
 
         statement.setInt(1, cliente.getCodigo());
         statement.setInt(2, codigo);
-        
+
         return statement.executeUpdate() > 0;
     }
-    
+
     public boolean delete() throws SQLException
     {
         String sql = "DELETE FROM Pedido WHERE ped_cod = ?";
-        
+
         Connection connection = Banco.getInstance().getConnection();
         PreparedStatement statement = connection.prepareStatement(sql);
 
         statement.setInt(1, codigo);
-        
+
         return statement.executeUpdate() > 0;
     }
-    
+
     public Object searchByCodigo()
     {
         Pedido obj = null;
         String sql = "SELECT * FROM Pedido WHERE ped_cod = " + codigo;
-        
+
         try
         {
             Connection connection = Banco.getInstance().getConnection();
             PreparedStatement statement = connection.prepareStatement(sql);
 
             ResultSet rs = statement.executeQuery();
-            
+
             if(rs.next())
             {
                 Cliente cli = (Cliente)new Cliente(rs.getInt("cli_cod")).searchByCodigo();
@@ -142,41 +140,67 @@ public class Pedido
 
                 obj = new Pedido(codigo, cli, item);
             }
-        }
-        catch(SQLException ex)
+        }catch(SQLException ex)
         {
             System.out.println(ex.getMessage());
         }
-        
+
         return obj;
     }
-    
-    public Object searchByCodigo()
+
+    public ObservableList<Object> searchByCliente()
     {
-        Pedido obj = null;
-        String sql = "SELECT * FROM Pedido WHERE ped_cod = " + codigo;
-        
+        ObservableList<Object> list = FXCollections.observableArrayList();
+        String sql = "SELECT * FROM Pedido WHERE cli_cod = " + cliente.getCodigo();
+
         try
         {
             Connection connection = Banco.getInstance().getConnection();
             PreparedStatement statement = connection.prepareStatement(sql);
 
             ResultSet rs = statement.executeQuery();
-            
-            if(rs.next())
+
+            while(rs.next())
             {
-                Cliente cli = (Cliente)new Cliente(rs.getInt("cli_cod")).searchByCodigo();
-                ObservableList<Object> aux = new ItemPedido(new Pedido(codigo)).searchByPedido();
+                Cliente cli = (Cliente)new Cliente(cliente.getCodigo()).searchByCodigo();
+                ObservableList<Object> aux = new ItemPedido(new Pedido(rs.getInt("ped_cod"))).searchByPedido();
                 ObservableList<ItemPedido> item = castAll(aux);
 
-                obj = new Pedido(codigo, cli, item);
+                list.add(new Pedido(rs.getInt("ped_cod"), cli, item));
             }
-        }
-        catch(SQLException ex)
+        }catch(SQLException ex)
         {
             System.out.println(ex.getMessage());
         }
-        
-        return obj;
+
+        return list;
+    }
+
+    public ObservableList<Object> searchAll()
+    {
+        ObservableList<Object> list = FXCollections.observableArrayList();
+        String sql = "SELECT * FROM Pedido";
+
+        try
+        {
+            Connection connection = Banco.getInstance().getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql);
+
+            ResultSet rs = statement.executeQuery();
+
+            while(rs.next())
+            {
+                Cliente cli = (Cliente)new Cliente(rs.getInt("cli_cod")).searchByCodigo();
+                ObservableList<Object> aux = new ItemPedido(new Pedido(rs.getInt("ped_cod"))).searchByPedido();
+                ObservableList<ItemPedido> item = castAll(aux);
+
+                list.add(new Pedido(rs.getInt("ped_cod"), cli, item)); 
+            }
+        }catch(SQLException ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+
+        return list;
     }
 }
