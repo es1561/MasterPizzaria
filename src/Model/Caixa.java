@@ -1,6 +1,8 @@
 package Model;
 
+import GoF.Template;
 import java.sql.Date;
+import javafx.collections.ObservableList;
 
 public class Caixa
 {
@@ -10,6 +12,7 @@ public class Caixa
     private double valorAbertura;
     private double entrada;
     private double saida;
+    ObservableList<Template> movimentos;
 
     public Caixa()
     {
@@ -99,6 +102,16 @@ public class Caixa
     public boolean isOpen()
     {
         return dataFechamento != null;
+    }
+
+    public ObservableList<Template> getMovimentos()
+    {
+        return movimentos;
+    }
+
+    public void setMovimentos(ObservableList<Template> movimentos)
+    {
+        this.movimentos = movimentos;
     }
     
     public Object searchByToday()

@@ -25,15 +25,6 @@ CREATE TABLE public.Caixa (
 );
 
 
-CREATE TABLE public.Pagamento (
-                comp_cod INTEGER NOT NULL,
-                caixa_data DATE NOT NULL,
-                pag_codg INTEGER NOT NULL,
-                pag_data DATE NOT NULL,
-                CONSTRAINT pk_pagamento PRIMARY KEY (comp_cod, caixa_data, pag_codg)
-);
-
-
 CREATE TABLE public.Categoria (
                 cat_cod INTEGER NOT NULL,
                 cat_desc VARCHAR(30) NOT NULL,
@@ -74,11 +65,15 @@ CREATE TABLE public.Pedido (
 );
 
 
-CREATE TABLE public.Recebimento (
-                ped_cod INTEGER NOT NULL,
+CREATE TABLE public.Movimento (
+                mov_cod INTEGER NOT NULL,
                 caixa_data DATE NOT NULL,
-                reb_data DATE NOT NULL,
-                CONSTRAINT pk_recebimento PRIMARY KEY (ped_cod, caixa_data)
+                mov_tipo INTEGER NOT NULL,
+                mov_data DATE NOT NULL,
+                mov_valor NUMERIC(6,2) NOT NULL,
+                ped_cod INTEGER,
+                comp_cod INTEGER,
+                CONSTRAINT pk_movimento PRIMARY KEY (mov_cod, caixa_data)
 );
 
 
@@ -121,21 +116,14 @@ ON DELETE NO ACTION
 ON UPDATE NO ACTION
 NOT DEFERRABLE;
 
-ALTER TABLE public.Pagamento ADD CONSTRAINT compra_pagamento_fk
+ALTER TABLE public.Movimento ADD CONSTRAINT compra_movimento_fk
 FOREIGN KEY (comp_cod)
 REFERENCES public.Compra (comp_cod)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION
 NOT DEFERRABLE;
 
-ALTER TABLE public.Recebimento ADD CONSTRAINT caixa_recebimento_fk
-FOREIGN KEY (caixa_data)
-REFERENCES public.Caixa (caixa_data)
-ON DELETE NO ACTION
-ON UPDATE NO ACTION
-NOT DEFERRABLE;
-
-ALTER TABLE public.Pagamento ADD CONSTRAINT caixa_pagamento_fk
+ALTER TABLE public.Movimento ADD CONSTRAINT caixa_movimento_fk
 FOREIGN KEY (caixa_data)
 REFERENCES public.Caixa (caixa_data)
 ON DELETE NO ACTION
@@ -184,7 +172,7 @@ ON DELETE NO ACTION
 ON UPDATE NO ACTION
 NOT DEFERRABLE;
 
-ALTER TABLE public.Recebimento ADD CONSTRAINT pedido_recebimento_fk
+ALTER TABLE public.Movimento ADD CONSTRAINT pedido_movimento_fk
 FOREIGN KEY (ped_cod)
 REFERENCES public.Pedido (ped_cod)
 ON DELETE NO ACTION
