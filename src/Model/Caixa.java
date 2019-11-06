@@ -1,7 +1,11 @@
 package Model;
 
+import DataBase.Banco;
 import GoF.Template;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import javafx.collections.ObservableList;
 
 public class Caixa
@@ -117,5 +121,19 @@ public class Caixa
     public Object searchByToday()
     {
         return null;
+    }
+    
+    public boolean insert() throws SQLException
+    {
+        String sql = "INSERT INTO Cliente(cli_cod, cli_nome, cli_cpf, cli_fone) ";
+        String values = "VALUES(?, ?, ?, ?)";
+        
+        Connection connection = Banco.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(sql + values);
+
+        statement.setInt(1, Banco.getInstance().getMaxPK("Cliente", "cli_cod") + 1);
+        
+        
+        return statement.executeUpdate() > 0;
     }
 }

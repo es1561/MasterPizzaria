@@ -23,7 +23,8 @@ public class CtrRecebimento extends Template
         instance = null;
     }
     
-    boolean execute(Movimento mov)
+    @Override
+    protected boolean execute(Movimento mov)
     {
         boolean flag;
         
