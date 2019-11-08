@@ -31,8 +31,7 @@ public class CtrRecebimento extends Template
         try
         {
             mov.setTipo(1);
-            
-            flag = true;
+            flag = mov.insert();
         }
         catch(Exception ex)
         {
