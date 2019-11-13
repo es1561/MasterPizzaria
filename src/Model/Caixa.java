@@ -5,7 +5,9 @@ import GoF.Template;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import javafx.collections.ObservableList;
 
 public class Caixa
@@ -16,7 +18,7 @@ public class Caixa
     private double valorAbertura;
     private double entrada;
     private double saida;
-    ObservableList<Template> movimentos;
+    ObservableList<Movimento> movimentos;
 
     public Caixa()
     {
@@ -108,32 +110,85 @@ public class Caixa
         return dataFechamento != null;
     }
 
-    public ObservableList<Template> getMovimentos()
+    public ObservableList<Movimento> getMovimentos()
     {
         return movimentos;
     }
 
-    public void setMovimentos(ObservableList<Template> movimentos)
+    public void setMovimentos(ObservableList<Movimento> movimentos)
     {
         this.movimentos = movimentos;
     }
-    
-    public Object searchByToday()
-    {
-        return null;
-    }
-    
+
     public boolean insert() throws SQLException
     {
-        String sql = "INSERT INTO Cliente(cli_cod, cli_nome, cli_cpf, cli_fone) ";
-        String values = "VALUES(?, ?, ?, ?)";
+        String sql = "INSERT INTO Caixa(caixa_data, caixa_data_a, caixa_valor_a) ";
+        String values = "VALUES(?, ?, ?)";
         
         Connection connection = Banco.getInstance().getConnection();
         PreparedStatement statement = connection.prepareStatement(sql + values);
 
-        statement.setInt(1, Banco.getInstance().getMaxPK("Cliente", "cli_cod") + 1);
-        
+        statement.setDate(1, data);
+        statement.setDate(2, dataAbertura);
+        statement.setDouble(3, valorAbertura);
         
         return statement.executeUpdate() > 0;
+    }
+    
+    public boolean update() throws SQLException
+    {
+        String sql = "UPDATE Caixa caixa_valor_a = ? WHERE caixa_data = ?";
+        
+        Connection connection = Banco.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(sql);
+
+        statement.setDouble(1, valorAbertura);
+        statement.setDate(2, data);
+        
+        return statement.executeUpdate() > 0;
+    }
+    
+    public boolean delete() throws SQLException
+    {
+        String sql = "DELETE FROM Caixa WHERE caixa_data = ?";
+        
+        Connection connection = Banco.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(sql);
+
+        statement.setDate(1, data);
+        
+        return statement.executeUpdate() > 0;
+    }
+    
+    public boolean checkBalance(double value) throws SQLException
+    {
+        double balance = valorAbertura + (entrada - saida);
+        
+        return balance - value >= 0;
+    }
+    
+    public Object searchByToday()
+    {
+        Caixa obj = null;
+        String sql = "SELECT * FROM Caixa WHERE caixa_data = ?";
+        
+        try
+        {
+            Connection connection = Banco.getInstance().getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql);
+
+            statement.setDate(1, data);
+            
+            ResultSet rs = statement.executeQuery();
+            
+            if(rs.next())
+                obj = new Caixa(data, rs.getDate("caixa_data_a"), rs.getDate("caixa_data_f"), rs.getDouble("caixa_valor_a"), rs.getDouble("caixa_entrada"), rs.getDouble("caixa_saida"));
+        }
+        catch(SQLException ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+        
+        return obj;
     }
 }

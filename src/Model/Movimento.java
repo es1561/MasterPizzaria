@@ -4,10 +4,13 @@ import DataBase.Banco;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.time.LocalDate;
 import javafx.animation.KeyValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class Movimento
 {
@@ -205,5 +208,44 @@ public class Movimento
         PreparedStatement statement = connection.prepareStatement(sql);
         
         return statement.executeUpdate() > 0;
+    }
+    
+    public ObservableList<Object> searchByDate()
+    {
+        ObservableList<Object> list = FXCollections.observableArrayList();
+        String sql = "SELECT * FROM Movimento WHERE caixa_data = ?";
+        
+        try
+        {
+            Connection connection = Banco.getInstance().getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql);
+
+            statement.setDate(1, caixa.getData());
+            
+            ResultSet rs = statement.executeQuery();
+            
+            while(rs.next())
+            {
+                int tipo = rs.getInt("mov_tipo");
+                
+                Pedido ped = null;
+                Compra comp = null;
+                
+                if(tipo == 1)
+                    ped = (Pedido) new Pedido(rs.getInt("ped_cod")).searchByCodigo();
+                else
+                    comp = (Compra) new Compra(rs.getInt("comp_cod")).searchByCodigo();
+                
+                Movimento obj = new Movimento(rs.getInt("mov_cod"), rs.getInt("mov_tipo"), rs.getDouble("mov_valor"), caixa, ped, comp);
+                
+                list.add(obj);
+            }
+        }
+        catch(SQLException ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+        
+        return list;
     }
 }

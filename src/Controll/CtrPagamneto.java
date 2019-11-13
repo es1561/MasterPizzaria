@@ -32,7 +32,7 @@ public class CtrPagamneto extends Template
         try
         {
             mov.setTipo(2);
-            flag = mov.insert();
+            flag = mov.getCaixa().checkBalance(mov.getValor()) ? mov.insert() : false;
         }
         catch(Exception ex)
         {

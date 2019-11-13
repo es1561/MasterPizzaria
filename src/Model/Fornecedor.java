@@ -1,5 +1,12 @@
 package Model;
 
+import DataBase.Banco;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javafx.collections.ObservableList;
+
 public class Fornecedor
 {
     private int codigo;
@@ -63,5 +70,29 @@ public class Fornecedor
         this.fone = fone;
     }
     
-    
+    public Object searchByCodigo()
+    {
+        Fornecedor obj = null;
+        String sql = "SELECT * FROM Fornecedor WHERE for_cod = " + codigo;
+        
+        try
+        {
+            Connection connection = Banco.getInstance().getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql);
+
+            ResultSet rs = statement.executeQuery();
+            
+            if(rs.next())
+            {
+                obj = new Fornecedor(rs.getInt("for_cod"), rs.getString("for_nome"), rs.getString("for_fone"));
+               
+            }
+        }
+        catch(SQLException ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+        
+        return obj;
+    }
 }
