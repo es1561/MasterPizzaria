@@ -137,12 +137,27 @@ public class Caixa
     
     public boolean update() throws SQLException
     {
-        String sql = "UPDATE Caixa caixa_valor_a = ? WHERE caixa_data = ?";
+        String sql = "UPDATE Caixa caixa_valor_a = ? , caixa_entrada = ?, caixa_saida = ? WHERE caixa_data = ?";
         
         Connection connection = Banco.getInstance().getConnection();
         PreparedStatement statement = connection.prepareStatement(sql);
 
         statement.setDouble(1, valorAbertura);
+        statement.setDouble(2, entrada);
+        statement.setDouble(3, saida);
+        statement.setDate(4, data);
+        
+        return statement.executeUpdate() > 0;
+    }
+    
+    public boolean close() throws SQLException
+    {
+        String sql = "UPDATE Caixa caixa_data_f = ? WHERE caixa_data = ?";
+        
+        Connection connection = Banco.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(sql);
+
+        statement.setDate(1, Date.valueOf(LocalDate.now()));
         statement.setDate(2, data);
         
         return statement.executeUpdate() > 0;

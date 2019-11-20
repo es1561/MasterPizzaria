@@ -12,10 +12,13 @@ public class Pedido
 {
     private int codigo;
     private Cliente cliente;
+    private double peso;
+    private double entrega;
     private ObservableList<ItemPedido> itens;
 
     public Pedido()
     {
+        
     }
 
     public Pedido(int codigo)
@@ -41,6 +44,15 @@ public class Pedido
         this.itens = itens;
     }
 
+    public Pedido(int codigo, Cliente cliente, double peso, ObservableList<ItemPedido> itens)
+    {
+        this.codigo = codigo;
+        this.cliente = cliente;
+        this.peso = peso;
+        this.itens = itens;
+        this.entrega = new StrategyPAC().execute(peso);
+    }
+    
     public int getCodigo()
     {
         return codigo;
@@ -69,6 +81,16 @@ public class Pedido
     public void setItens(ObservableList<ItemPedido> itens)
     {
         this.itens = itens;
+    }
+
+    public double getPeso()
+    {
+        return peso;
+    }
+
+    public void setPeso(double peso)
+    {
+        this.peso = peso;
     }
 
     private ObservableList<ItemPedido> castAll(ObservableList<Object> list)

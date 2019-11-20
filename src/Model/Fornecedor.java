@@ -95,4 +95,30 @@ public class Fornecedor
         
         return obj;
     }
+    
+    public Object searchByNome()
+    {
+        Fornecedor obj = null;
+        String sql = "SELECT * FROM Fornecedor WHERE for_cod LIKE '" + nome + "%'";
+        
+        try
+        {
+            Connection connection = Banco.getInstance().getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql);
+
+            ResultSet rs = statement.executeQuery();
+            
+            if(rs.next())
+            {
+                obj = new Fornecedor(rs.getInt("for_cod"), rs.getString("for_nome"), rs.getString("for_fone"));
+               
+            }
+        }
+        catch(SQLException ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+        
+        return obj;
+    }
 }
