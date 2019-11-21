@@ -30,7 +30,7 @@ public class CtrProduto
         instance = null;
     }
     
-    public Result insert(String nome, int cat_cod, double preco)
+    public Result insert(String nome, int cat_cod, double preco, double peso)
     {
         Result result = new Result();
         Banco banco = Banco.conectar();
@@ -39,7 +39,7 @@ public class CtrProduto
         {
             if(banco.isConnected())
             {
-                Produto produto = new Produto(nome, preco, (Categoria)new Categoria(cat_cod).searchByCodigo());
+                Produto produto = new Produto(nome, preco, peso, (Categoria)new Categoria(cat_cod).searchByCodigo());
                 
                 banco.getConnection().setAutoCommit(false);
                 if(produto.insert())
@@ -66,7 +66,7 @@ public class CtrProduto
         return result;
     }
     
-    public Result update(int codigo, String nome, int cat_cod, double preco)
+    public Result update(int codigo, String nome, int cat_cod, double preco, double peso)
     {
         Result result = new Result();
         Banco banco = Banco.conectar();
@@ -75,7 +75,7 @@ public class CtrProduto
         {
             if(banco.isConnected())
             {
-                Produto produto = new Produto(codigo, nome, preco, (Categoria)new Categoria(cat_cod).searchByCodigo());
+                Produto produto = new Produto(codigo, nome, preco, peso, (Categoria)new Categoria(cat_cod).searchByCodigo());
                 
                 banco.getConnection().setAutoCommit(false);
                 if(produto.update())

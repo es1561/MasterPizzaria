@@ -13,6 +13,7 @@ public class Produto
     private int codigo;
     private String nome;
     private double valor;
+    private double peso;
     private Categoria categoria;
 
     public Produto()
@@ -24,18 +25,20 @@ public class Produto
         this.codigo = codigo;
     }
 
-    public Produto(String nome, double valor, Categoria categoria)
+    public Produto(String nome, double valor, double peso, Categoria categoria)
     {
         this.nome = nome;
         this.valor = valor;
+        this.peso = peso;
         this.categoria = categoria;
     }
 
-    public Produto(int codigo, String nome, double valor, Categoria categoria)
+    public Produto(int codigo, String nome, double valor, double peso, Categoria categoria)
     {
         this.codigo = codigo;
         this.nome = nome;
         this.valor = valor;
+        this.peso = peso;
         this.categoria = categoria;
     }
 
@@ -69,6 +72,16 @@ public class Produto
         this.valor = valor;
     }
 
+    public double getPeso()
+    {
+        return peso;
+    }
+
+    public void setPeso(double peso)
+    {
+        this.peso = peso;
+    }
+
     public Categoria getCategoria()
     {
         return categoria;
@@ -81,8 +94,8 @@ public class Produto
     
     public boolean insert() throws SQLException
     {
-        String sql = "INSERT INTO Produto(prod_cod, prod_nome, prod_valor, cat_cod) ";
-        String values = "VALUES(?, ?, ?, ?)";
+        String sql = "INSERT INTO Produto(prod_cod, prod_nome, prod_valor, prod_peso, cat_cod) ";
+        String values = "VALUES(?, ?, ?, ?, ?)";
         
         Connection connection = Banco.getInstance().getConnection();
         PreparedStatement statement = connection.prepareStatement(sql + values);
@@ -90,22 +103,24 @@ public class Produto
         statement.setInt(1, Banco.getInstance().getMaxPK("Produto", "prod_cod") + 1);
         statement.setString(2, nome);
         statement.setDouble(3, valor);
-        statement.setInt(4, categoria.getCodigo());
+        statement.setDouble(4, peso);
+        statement.setInt(5, categoria.getCodigo());
         
         return statement.executeUpdate() > 0;
     }
     
     public boolean update() throws SQLException
     {
-        String sql = "UPDATE Produto SET prod_nome = ?, prod_valor = ?, cat_cod = ? WHERE prod_cod = ?";
+        String sql = "UPDATE Produto SET prod_nome = ?, prod_valor = ?, prod_peso = ?, cat_cod = ? WHERE prod_cod = ?";
         
         Connection connection = Banco.getInstance().getConnection();
         PreparedStatement statement = connection.prepareStatement(sql);
 
         statement.setString(1, nome);
         statement.setDouble(2, valor);
-        statement.setInt(3, categoria.getCodigo());
-        statement.setInt(4, codigo);
+        statement.setDouble(3, peso);
+        statement.setInt(4, categoria.getCodigo());
+        statement.setInt(5, codigo);
         
         return statement.executeUpdate() > 0;
     }
@@ -137,7 +152,7 @@ public class Produto
             if(rs.next())
             {
                 Categoria cat = (Categoria)new Categoria(rs.getInt("cat_cod")).searchByCodigo();
-                obj = new Produto(rs.getInt("prod_cod"), rs.getString("prod_nome"), rs.getDouble("prod_valor"), cat);
+                obj = new Produto(rs.getInt("prod_cod"), rs.getString("prod_nome"), rs.getDouble("prod_valor"), rs.getDouble("prod_peso"), cat);
             }
         }
         catch(SQLException ex)
@@ -163,7 +178,7 @@ public class Produto
             if(rs.next())
             {
                 Categoria cat = (Categoria)new Categoria(rs.getInt("cat_cod")).searchByCodigo();
-                list.add(new Produto(rs.getInt("prod_cod"), rs.getString("prod_nome"), rs.getDouble("prod_valor"), cat));
+                list.add(new Produto(rs.getInt("prod_cod"), rs.getString("prod_nome"), rs.getDouble("prod_valor"), rs.getDouble("prod_peso"), cat));
             }
         }
         catch(SQLException ex)

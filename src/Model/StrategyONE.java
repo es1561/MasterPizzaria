@@ -3,12 +3,12 @@ package Model;
 
 import GoF.Strategy;
 
-public class StrategyPAC implements Strategy
+public class StrategyONE implements Strategy
 {
     @Override
     public double execute(double peso)
     {
-        return peso < 2 ? 9.9 : new StrategySEDEX().execute(peso);
+        return peso < 5 ? 4.99 : new StrategyTWO().execute(peso);
     }
     
 }

@@ -50,7 +50,7 @@ public class Pedido
         this.cliente = cliente;
         this.peso = peso;
         this.itens = itens;
-        this.entrega = new StrategyPAC().execute(peso);
+        this.entrega = new StrategyONE().execute(peso);
     }
     
     public int getCodigo()
@@ -91,8 +91,14 @@ public class Pedido
     public void setPeso(double peso)
     {
         this.peso = peso;
+        this.entrega = new StrategyONE().execute(peso);
     }
 
+    public double getEntrega()
+    {
+        return entrega;
+    }
+    
     private ObservableList<ItemPedido> castAll(ObservableList<Object> list)
     {
         ObservableList<ItemPedido> result = FXCollections.observableArrayList();

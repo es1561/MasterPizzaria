@@ -2,13 +2,13 @@ package Model;
 
 import GoF.Strategy;
 
-public class StrategySEDEX implements Strategy
+public class StrategyTWO implements Strategy
 {
 
     @Override
     public double execute(double peso)
     {
-        return 18.9;
+        return 0.99;
     }
     
 }
