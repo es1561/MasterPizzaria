@@ -2,9 +2,11 @@ package Model;
 
 import DataBase.Banco;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -37,22 +39,30 @@ public class Pedido
         this.cliente = cliente;
     }
 
-    public Pedido(int codigo, Cliente cliente, ObservableList<ItemPedido> itens)
+    public Pedido(Cliente cliente, double peso, double entrega)
     {
-        this.codigo = codigo;
         this.cliente = cliente;
+        this.peso = peso;
+        this.entrega = entrega;
+    }
+    
+    public Pedido(Cliente cliente, double peso, double entrega, ObservableList<ItemPedido> itens)
+    {
+        this.cliente = cliente;
+        this.peso = peso;
+        this.entrega = entrega;
         this.itens = itens;
     }
 
-    public Pedido(int codigo, Cliente cliente, double peso, ObservableList<ItemPedido> itens)
+    public Pedido(int codigo, Cliente cliente, double peso, double entrega, ObservableList<ItemPedido> itens)
     {
         this.codigo = codigo;
         this.cliente = cliente;
         this.peso = peso;
+        this.entrega = entrega;
         this.itens = itens;
-        this.entrega = new StrategyONE().execute(peso);
     }
-    
+
     public int getCodigo()
     {
         return codigo;
@@ -99,26 +109,19 @@ public class Pedido
         return entrega;
     }
     
-    private ObservableList<ItemPedido> castAll(ObservableList<Object> list)
-    {
-        ObservableList<ItemPedido> result = FXCollections.observableArrayList();
-
-        for(Object object: list)
-            result.add((ItemPedido)object);
-
-        return result;
-    }
-
     public boolean insert() throws SQLException
     {
-        String sql = "INSERT INTO Pedido(ped_cod, cli_cod) ";
-        String values = "VALUES(?, ?)";
+        String sql = "INSERT INTO Pedido(ped_cod, ped_data, cli_cod, ped_peso, ped_entrega) ";
+        String values = "VALUES(?, ?, ?, ?, ?)";
 
         Connection connection = Banco.getInstance().getConnection();
         PreparedStatement statement = connection.prepareStatement(sql + values);
 
         statement.setInt(1, Banco.getInstance().getMaxPK("Pedido", "ped_cod") + 1);
-        statement.setInt(2, cliente.getCodigo());
+        statement.setDate(2, Date.valueOf(LocalDate.now()));
+        statement.setInt(3, cliente.getCodigo());
+        statement.setDouble(4, peso);
+        statement.setDouble(5, entrega);
 
         return statement.executeUpdate() > 0;
     }
@@ -166,7 +169,7 @@ public class Pedido
                 ObservableList<Object> aux = new ItemPedido(new Pedido(codigo)).searchByPedido();
                 ObservableList<ItemPedido> item = castAll(aux);
 
-                obj = new Pedido(codigo, cli, item);
+                obj = new Pedido(cli, rs.getDouble("ped_peso"), rs.getDouble("ped_entrega"), item);
             }
         }catch(SQLException ex)
         {
@@ -194,7 +197,7 @@ public class Pedido
                 ObservableList<Object> aux = new ItemPedido(new Pedido(rs.getInt("ped_cod"))).searchByPedido();
                 ObservableList<ItemPedido> item = castAll(aux);
 
-                list.add(new Pedido(rs.getInt("ped_cod"), cli, item));
+                list.add(new Pedido(rs.getInt("ped_cod"), cli, rs.getDouble("ped_peso"), rs.getDouble("ped_entrega"), item));
             }
         }catch(SQLException ex)
         {
@@ -222,7 +225,7 @@ public class Pedido
                 ObservableList<Object> aux = new ItemPedido(new Pedido(rs.getInt("ped_cod"))).searchByPedido();
                 ObservableList<ItemPedido> item = castAll(aux);
 
-                list.add(new Pedido(rs.getInt("ped_cod"), cli, item)); 
+                list.add(new Pedido(rs.getInt("ped_cod"), cli, rs.getDouble("ped_peso"), rs.getDouble("ped_entrega"), item));
             }
         }catch(SQLException ex)
         {
@@ -230,5 +233,15 @@ public class Pedido
         }
 
         return list;
+    }
+    
+    private ObservableList<ItemPedido> castAll(ObservableList<Object> list)
+    {
+        ObservableList<ItemPedido> result = FXCollections.observableArrayList();
+
+        for(Object object: list)
+            result.add((ItemPedido)object);
+
+        return result;
     }
 }

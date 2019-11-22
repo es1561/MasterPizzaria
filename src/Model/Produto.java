@@ -188,4 +188,11 @@ public class Produto
         
         return list;
     }
+    
+    
+    @Override
+    public String toString()
+    {
+        return nome + " (" + valor + ")";
+    }
 }

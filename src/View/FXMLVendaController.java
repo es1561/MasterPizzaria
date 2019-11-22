@@ -7,6 +7,7 @@ package View;
 
 import Controll.CtrCliente;
 import Controll.CtrPedido;
+import Controll.CtrProduto;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -69,54 +70,150 @@ public class FXMLVendaController implements Initializable
     @FXML
     private TableColumn<Object, Double> c_valor;
 
+    private void disableButtons(boolean flag)
+    {
+        btn_novo.setDisable(flag);
+        btn_editar.setDisable(flag);
+        btn_apagar.setDisable(flag);
+    }
+    
+    private void disableFields(boolean flag)
+    {
+        cb_cliente.setDisable(flag);
+        cb_produto.setDisable(flag);
+        btn_add.setDisable(flag);
+        btn_rem.setDisable(flag);
+        list_item.setDisable(flag);
+    }
+    
+    private void disableSearch(boolean flag)
+    {
+        btn_busca.setDisable(flag);
+        tb_filtro.setDisable(flag);
+        table_pedido.setDisable(flag);
+    }
+    
+    private void clearFields()
+    {
+        cb_cliente.setValue(null);
+        cb_produto.setValue(null);
+        
+        tb_entrega.clear();
+        tb_peso.clear();
+        tb_total.clear();
+        tb_filtro.clear();
+        
+        list_item.getItems().clear();
+    }
+    
+    private void unlockNovo()
+    {
+        disableButtons(true);
+        disableFields(false);
+        disableSearch(true);
+        
+        clearFields();
+        
+        btn_novo.setDisable(false);
+        btn_novo.setText("Salvar");
+    }
+    
+    private void reset()
+    {
+        disableButtons(false);
+        disableFields(true);
+        disableSearch(false);
+
+        clearFields();
+        
+        btn_editar.setDisable(true);
+        btn_apagar.setDisable(true);
+        
+        btn_novo.setText("Novo");
+    }
+    
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
         // TODO
         c_cod.setCellValueFactory(new PropertyValueFactory<Object,Integer>("codigo"));
+        c_cliente.setCellValueFactory(new PropertyValueFactory<Object,String>("cliente"));
+        c_peso.setCellValueFactory(new PropertyValueFactory<Object,Double>("peso"));
+        c_entrega.setCellValueFactory(new PropertyValueFactory<Object,Double>("entrega"));
+        c_valor.setCellValueFactory(new PropertyValueFactory<Object,Double>("valor"));
         
         cb_cliente.setItems(CtrCliente.instancia().searchAll());
         CtrCliente.finaliza();
+        
+        cb_produto.setItems(CtrProduto.instancia().searchAll());
+        CtrProduto.finaliza();
+        
+        reset();
     }    
 
     @FXML
     private void ClickNovo(ActionEvent event)
     {
+        if(btn_novo.getText().compareTo("Novo") != 0)
+        {
+            Object cli = cb_cliente.getValue();
+            double peso = Double.valueOf(tb_peso.getText());
+            double entrega = Double.valueOf(tb_entrega.getText());
+            
+            CtrPedido.instancia().insert(cli, peso, entrega, list_item.getItems());
+            CtrPedido.finaliza();
+            
+            reset();
+        }
+        else
+            unlockNovo();
     }
 
     @FXML
     private void ClickEditar(ActionEvent event)
     {
+        
     }
 
     @FXML
     private void ClickApagar(ActionEvent event)
     {
+        
+        
+        reset();
     }
 
     @FXML
     private void ClickLimpa(ActionEvent event)
     {
+        reset();
     }
 
     @FXML
     private void ChangeCliente(ActionEvent event)
     {
+        
     }
 
     @FXML
     private void ClickRemove(ActionEvent event)
     {
+        if(cb_produto.getValue() != null && list_item.getItems().size() > 0)
+            list_item.getItems().remove(cb_produto.getValue());
     }
 
     @FXML
     private void ClickAdd(ActionEvent event)
     {
+        if(cb_produto.getValue() != null)
+            list_item.getItems().add(cb_produto.getValue());
     }
 
     @FXML
     private void ClickBuscar(ActionEvent event)
     {
+        table_pedido.setItems(CtrPedido.instancia().searchAll());
+        CtrPedido.finaliza();
     }
     
 }

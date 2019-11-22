@@ -4,6 +4,7 @@ import Model.Cliente;
 import Model.Pedido;
 import Utils.Result;
 import DataBase.Banco;
+import Model.ItemPedido;
 import java.sql.SQLException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,7 +31,7 @@ public class CtrPedido
         instance = null;
     }
     
-    public Result insert(int cli_cod)
+    public Result insert(Object cliente, double peso, double entrega, ObservableList<Object> item)
     {
         Result result = new Result();
         Banco banco = Banco.conectar();
@@ -39,16 +40,29 @@ public class CtrPedido
         {
             if(banco.isConnected())
             {
-                Cliente cliente;
                 Pedido pedido;
                 
-                cliente = (Cliente)CtrCliente.instancia().searchByCodigo(cli_cod);
                 CtrCliente.finaliza();
-                pedido = new Pedido(cliente);
+                pedido = new Pedido((Cliente) cliente, peso, entrega);
                 
                 banco.getConnection().setAutoCommit(false);
                 if(pedido.insert())
-                    banco.getConnection().commit();
+                {
+                    boolean comit = true;
+                    ItemPedido itemp;
+                    
+                    for(int i = 0; comit && i < item.size(); i++)
+                    {
+                        itemp = (ItemPedido)item.get(i);
+                        
+                        comit = itemp.insert();
+                    }
+
+                    if(comit)
+                        banco.getConnection().commit();
+                    else
+                        banco.getConnection().rollback();
+                }
                 else
                     banco.getConnection().rollback();
 
@@ -112,7 +126,6 @@ public class CtrPedido
                 CtrCliente.finaliza();
                 pedido = new Pedido(cliente);
                 
-                
                 list.addAll(pedido.searchByCliente());
                 Banco.desconectar();
             }
@@ -149,5 +162,28 @@ public class CtrPedido
         }
         
         return result;
+    }
+    
+    public ObservableList<Object> searchAll()
+    { 
+        Banco banco = Banco.conectar();
+        ObservableList<Object> list = FXCollections.observableArrayList();
+        
+        try
+        {
+            if(banco.isConnected())
+            {
+                list.addAll(new Pedido().searchAll());
+                Banco.desconectar();
+            }
+            else
+                throw new SQLException("Banco Off-Line...");
+        }
+        catch(SQLException ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+        
+        return list;
     }
 }

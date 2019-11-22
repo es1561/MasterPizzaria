@@ -155,7 +155,7 @@ public class CtrCliente
         {
             if(banco.isConnected())
             {
-                list.addAll(new Cliente().searchAll());
+                list = castAll(new Cliente().searchAll());
                 Banco.desconectar();
             }
             else
@@ -198,5 +198,15 @@ public class CtrCliente
         }
         
         return list;
+    }
+    
+    private ObservableList<Object> castAll(ObservableList<Cliente> list)
+    {
+        ObservableList<Object> result = FXCollections.observableArrayList();
+        
+        for (Cliente cliente : list)
+            result.add(cliente);
+        
+        return result;
     }
 }

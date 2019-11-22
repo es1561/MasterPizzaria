@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class Cliente implements Observer
@@ -131,7 +132,7 @@ public class Cliente implements Observer
     
     public Object searchByCodigo()
     {
-        Categoria obj = null;
+        Cliente obj = null;
         String sql = "SELECT * FROM Cliente WHERE cli_cod = " + codigo;
         
         try
@@ -142,17 +143,7 @@ public class Cliente implements Observer
             ResultSet rs = statement.executeQuery();
             
             if(rs.next())
-            {
-                obj = new Categoria(rs.getInt("cat_cod"), rs.getString("cat_desc"));
-                
-                ObservableList<Object> list = new Interesse(obj).searchByCategoria();
-                
-                for (Object object : list) 
-                {
-                    Interesse inte = (Interesse)object;
-                    obj.add(inte.getCliente());
-                }
-            }
+                obj = new Cliente(rs.getInt("cli_cod"), rs.getString("cli_nome"), rs.getString("cli_cpf"), rs.getString("cli_fone"));
         }
         catch(SQLException ex)
         {
@@ -162,9 +153,9 @@ public class Cliente implements Observer
         return obj;
     }
     
-    public Object searchAll()
+    public ObservableList<Cliente> searchAll()
     {
-        Categoria obj = null;
+        ObservableList<Cliente> list = FXCollections.observableArrayList();
         String sql = "SELECT * FROM Cliente";
         
         try
@@ -174,25 +165,15 @@ public class Cliente implements Observer
 
             ResultSet rs = statement.executeQuery();
             
-            if(rs.next())
-            {
-                obj = new Categoria(rs.getInt("cat_cod"), rs.getString("cat_desc"));
-                
-                ObservableList<Object> list = new Interesse(obj).searchByCategoria();
-                
-                for (Object object : list) 
-                {
-                    Interesse inte = (Interesse)object;
-                    obj.add(inte.getCliente());
-                }
-            }
+            while(rs.next())
+                list.add(new Cliente(rs.getInt("cli_cod"), rs.getString("cli_nome"), rs.getString("cli_cpf"), rs.getString("cli_fone")));
         }
         catch(SQLException ex)
         {
             System.out.println(ex.getMessage());
         }
         
-        return obj;
+        return list;
     }
 
     @Override
