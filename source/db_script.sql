@@ -20,7 +20,7 @@ CREATE TABLE public.Caixa (
                 caixa_data_f DATE,
                 caixa_valor_a NUMERIC(10,2) NOT NULL,
                 caixa_entrada NUMERIC(10,2),
-                caixa_saida NUMERIC(10,2) NOT NULL,
+                caixa_saida NUMERIC(10,2),
                 CONSTRAINT pk_caixa PRIMARY KEY (caixa_data)
 );
 
@@ -61,6 +61,8 @@ CREATE TABLE public.Pedido (
                 ped_cod INTEGER NOT NULL,
                 ped_data DATE NOT NULL,
                 cli_cod INTEGER NOT NULL,
+                ped_peso NUMERIC(8,2) NOT NULL,
+                ped_entrega NUMERIC(8,2) NOT NULL,
                 CONSTRAINT pk_pedido PRIMARY KEY (ped_cod)
 );
 
@@ -82,6 +84,7 @@ CREATE TABLE public.Produto (
                 prod_valor NUMERIC(10,2) NOT NULL,
                 prod_nome VARCHAR(30) NOT NULL,
                 cat_cod INTEGER NOT NULL,
+                prod_peso NUMERIC(8,2) NOT NULL,
                 CONSTRAINT pk_produto PRIMARY KEY (prod_cod)
 );
 
