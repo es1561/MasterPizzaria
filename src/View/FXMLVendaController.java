@@ -5,6 +5,8 @@
  */
 package View;
 
+import Controll.CtrCliente;
+import Controll.CtrPedido;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -16,6 +18,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 /**
  * FXML Controller class
@@ -70,6 +73,10 @@ public class FXMLVendaController implements Initializable
     public void initialize(URL url, ResourceBundle rb)
     {
         // TODO
+        c_cod.setCellValueFactory(new PropertyValueFactory<Object,Integer>("codigo"));
+        
+        cb_cliente.setItems(CtrCliente.instancia().searchAll());
+        CtrCliente.finaliza();
     }    
 
     @FXML
