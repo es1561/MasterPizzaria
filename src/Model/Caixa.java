@@ -24,15 +24,13 @@ public class Caixa
     {
     }
 
-    public Caixa(Date data)
+    public Caixa(Date data, Date dataAbertura, double valorAbertura, double entrada, double saida)
     {
         this.data = data;
-    }
-
-    public Caixa(Date data, double valorAbertura)
-    {
-        this.data = data;
+        this.dataAbertura = dataAbertura;
         this.valorAbertura = valorAbertura;
+        this.entrada = entrada;
+        this.saida = saida;
     }
 
     public Caixa(Date data, Date dataAbertura, Date dataFechamento, double valorAbertura, double entrada, double saida)
@@ -122,8 +120,8 @@ public class Caixa
 
     public boolean insert() throws SQLException
     {
-        String sql = "INSERT INTO Caixa(caixa_data, caixa_data_a, caixa_valor_a) ";
-        String values = "VALUES(?, ?, ?)";
+        String sql = "INSERT INTO Caixa(caixa_data, caixa_data_a, caixa_valor_a, caixa_entrada, caixa_saida) ";
+        String values = "VALUES(?, ?, ?, ?, ?)";
         
         Connection connection = Banco.getInstance().getConnection();
         PreparedStatement statement = connection.prepareStatement(sql + values);
@@ -131,6 +129,8 @@ public class Caixa
         statement.setDate(1, data);
         statement.setDate(2, dataAbertura);
         statement.setDouble(3, valorAbertura);
+        statement.setDouble(4, entrada);
+        statement.setDouble(5, saida);
         
         return statement.executeUpdate() > 0;
     }
@@ -192,12 +192,12 @@ public class Caixa
             Connection connection = Banco.getInstance().getConnection();
             PreparedStatement statement = connection.prepareStatement(sql);
 
-            statement.setDate(1, data);
+            statement.setDate(1, Date.valueOf(LocalDate.now()));
             
             ResultSet rs = statement.executeQuery();
             
             if(rs.next())
-                obj = new Caixa(data, rs.getDate("caixa_data_a"), rs.getDate("caixa_data_f"), rs.getDouble("caixa_valor_a"), rs.getDouble("caixa_entrada"), rs.getDouble("caixa_saida"));
+                obj = new Caixa(rs.getDate("caixa_data_a"), rs.getDate("caixa_data_a"), rs.getDate("caixa_data_f"), rs.getDouble("caixa_valor_a"), rs.getDouble("caixa_entrada"), rs.getDouble("caixa_saida"));
         }
         catch(SQLException ex)
         {
