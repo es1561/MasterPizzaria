@@ -33,6 +33,12 @@ public class Pedido
         this.cliente = cliente;
     }
 
+    public Pedido(double peso)
+    {
+        this.peso = peso;
+        this.entrega = new StrategyONE().execute(peso);
+    }
+
     public Pedido(int codigo, Cliente cliente)
     {
         this.codigo = codigo;
@@ -117,7 +123,8 @@ public class Pedido
         Connection connection = Banco.getInstance().getConnection();
         PreparedStatement statement = connection.prepareStatement(sql + values);
 
-        statement.setInt(1, Banco.getInstance().getMaxPK("Pedido", "ped_cod") + 1);
+        codigo = Banco.getInstance().getMaxPK("Pedido", "ped_cod") + 1;
+        statement.setInt(1, codigo);
         statement.setDate(2, Date.valueOf(LocalDate.now()));
         statement.setInt(3, cliente.getCodigo());
         statement.setDouble(4, peso);

@@ -54,7 +54,7 @@ public class CtrPedido
                     for(int i = 0; comit && i < item.size(); i++)
                     {
                         itemp = (ItemPedido)item.get(i);
-                        
+                        itemp.setPedido(pedido);
                         comit = itemp.insert();
                     }
 
@@ -185,5 +185,10 @@ public class CtrPedido
         }
         
         return list;
+    }
+    
+    public double getEntrega(double peso)
+    {
+        return new Pedido(peso).getEntrega();
     }
 }

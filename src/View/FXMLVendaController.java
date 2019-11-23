@@ -6,6 +6,7 @@
 package View;
 
 import Controll.CtrCliente;
+import Controll.CtrItemPedido;
 import Controll.CtrPedido;
 import Controll.CtrProduto;
 import java.net.URL;
@@ -132,6 +133,22 @@ public class FXMLVendaController implements Initializable
         btn_novo.setText("Novo");
     }
     
+    private void refreshPedido()
+    {
+        double peso = CtrItemPedido.instancia().getPesoTotal(list_item.getItems());
+        double total = CtrItemPedido.instancia().getValorTotal(list_item.getItems());
+        double entrega = CtrPedido.instancia().getEntrega(peso);
+        
+        tb_peso.setText(Double.toString(peso));
+        tb_total.setText(Double.toString(total));
+        tb_entrega.setText(Double.toString(entrega));
+        
+        list_item.refresh();
+        
+        CtrItemPedido.finaliza();
+        CtrPedido.finaliza();
+    }
+    
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
@@ -199,14 +216,22 @@ public class FXMLVendaController implements Initializable
     private void ClickRemove(ActionEvent event)
     {
         if(cb_produto.getValue() != null && list_item.getItems().size() > 0)
-            list_item.getItems().remove(cb_produto.getValue());
+        {
+            CtrItemPedido.instancia().remove(cb_produto.getValue(), list_item.getItems());
+            CtrItemPedido.finaliza();
+            refreshPedido();
+        }
     }
 
     @FXML
     private void ClickAdd(ActionEvent event)
     {
         if(cb_produto.getValue() != null)
-            list_item.getItems().add(cb_produto.getValue());
+        {
+            CtrItemPedido.instancia().add(cb_produto.getValue(), list_item.getItems());
+            CtrItemPedido.finaliza();
+            refreshPedido();
+        }
     }
 
     @FXML

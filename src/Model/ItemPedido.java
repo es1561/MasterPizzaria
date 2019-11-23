@@ -28,6 +28,12 @@ public class ItemPedido
         this.produto = produto;
     }
 
+    public ItemPedido(Produto produto, int quant)
+    {
+        this.produto = produto;
+        this.quant = quant;
+    }
+    
     public ItemPedido(Pedido pedido, Produto produto)
     {
         this.pedido = pedido;
@@ -139,5 +145,11 @@ public class ItemPedido
         }
         
         return list;
+    }
+    
+    @Override
+    public String toString()
+    {
+        return quant + "x " +  produto.getNome();
     }
 }

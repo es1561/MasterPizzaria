@@ -144,4 +144,70 @@ public class CtrItemPedido
         
         return list;
     }
+    
+    public void add(Object obj, ObservableList<Object> list)
+    {
+        boolean insert = true;
+        
+        for(int i = 0; insert && i < list.size(); i++)
+        {
+            Produto prod = (Produto)obj;
+            ItemPedido item = (ItemPedido)list.get(i);
+            
+            if(item.getProduto().getCodigo() == prod.getCodigo())
+            {
+                item.setQuant(item.getQuant() + 1);
+                insert = false;
+            }
+        }
+        
+        if(insert)
+            list.add(new ItemPedido((Produto)obj, 1));
+    }
+    
+    public void remove(Object obj, ObservableList<Object> list)
+    {
+        boolean flag = true;
+        
+        for(int i = 0; flag && i < list.size(); i++)
+        {
+            Produto prod = (Produto)obj;
+            ItemPedido item = (ItemPedido)list.get(i);
+            
+            if(item.getProduto().getCodigo() == prod.getCodigo() && item.getQuant() > 1)
+            {
+                item.setQuant(item.getQuant() - 1);
+                flag = false;
+            }
+            else
+            {
+                list.remove(i);
+                flag = false;
+            }
+        }
+    }
+    
+    public double getValorTotal(ObservableList<Object> list)
+    {
+        double value = 0;
+        
+        for(Object object: list)
+        {
+            value += ((ItemPedido)object).getQuant() * ((ItemPedido)object).getProduto().getValor();
+        }
+        
+        return value;
+    }
+    
+    public double getPesoTotal(ObservableList<Object> list)
+    {
+        double value = 0;
+        
+        for(Object object: list)
+        {
+            value += ((ItemPedido)object).getQuant() * ((ItemPedido)object).getProduto().getPeso();
+        }
+        
+        return value;
+    }
 }
