@@ -18,9 +18,9 @@ public abstract class Template
         
         try
         {
-            Caixa caixa = null;
-            Pedido ped = null;
-            Compra comp = null;
+            Caixa caixa = (Caixa) new Caixa().searchByToday();
+            Pedido ped = new Pedido(ped_cod);
+            Compra comp = new Compra(com_cod);
             Movimento mov = new Movimento(valor, caixa, ped, comp);
             
             if(banco.isConnected())

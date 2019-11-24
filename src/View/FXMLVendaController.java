@@ -176,8 +176,9 @@ public class FXMLVendaController implements Initializable
             Object cli = cb_cliente.getValue();
             double peso = Double.valueOf(tb_peso.getText());
             double entrega = Double.valueOf(tb_entrega.getText());
+            double total = Double.valueOf(tb_total.getText()) + entrega;
             
-            CtrPedido.instancia().insert(cli, peso, entrega, list_item.getItems());
+            CtrPedido.instancia().insert(cli, peso, entrega, total, list_item.getItems());
             CtrPedido.finaliza();
             
             reset();

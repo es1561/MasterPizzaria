@@ -7,6 +7,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.time.LocalDate;
 import javafx.collections.ObservableList;
 
@@ -120,32 +121,40 @@ public class Caixa
 
     public boolean insert() throws SQLException
     {
-        String sql = "INSERT INTO Caixa(caixa_data, caixa_data_a, caixa_valor_a, caixa_entrada, caixa_saida) ";
-        String values = "VALUES(?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Caixa(caixa_data, caixa_data_a, caixa_data_f, caixa_valor_a, caixa_entrada, caixa_saida) ";
+        String values = "VALUES(?, ?, ?, ?, ?, ?)";
         
         Connection connection = Banco.getInstance().getConnection();
         PreparedStatement statement = connection.prepareStatement(sql + values);
 
         statement.setDate(1, data);
         statement.setDate(2, dataAbertura);
-        statement.setDouble(3, valorAbertura);
-        statement.setDouble(4, entrada);
-        statement.setDouble(5, saida);
+        if(dataFechamento != null)
+            statement.setDate(3, dataFechamento);
+        else
+            statement.setNull(3, Types.NULL);
+        statement.setDouble(4, valorAbertura);
+        statement.setDouble(5, entrada);
+        statement.setDouble(6, saida);
         
         return statement.executeUpdate() > 0;
     }
     
     public boolean update() throws SQLException
     {
-        String sql = "UPDATE Caixa caixa_valor_a = ? , caixa_entrada = ?, caixa_saida = ? WHERE caixa_data = ?";
+        String sql = "UPDATE Caixa SET caixa_data_f = ?, caixa_valor_a = ? , caixa_entrada = ?, caixa_saida = ? WHERE caixa_data = ?";
         
         Connection connection = Banco.getInstance().getConnection();
         PreparedStatement statement = connection.prepareStatement(sql);
 
-        statement.setDouble(1, valorAbertura);
-        statement.setDouble(2, entrada);
-        statement.setDouble(3, saida);
-        statement.setDate(4, data);
+        if(dataFechamento != null)
+            statement.setDate(1, dataFechamento);
+        else
+            statement.setNull(1, Types.NULL);
+        statement.setDouble(2, valorAbertura);
+        statement.setDouble(3, entrada);
+        statement.setDouble(4, saida);
+        statement.setDate(5, data);
         
         return statement.executeUpdate() > 0;
     }

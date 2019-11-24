@@ -110,12 +110,13 @@ public class FXMLCaixaController implements Initializable
     private void refresh()
     {
         Object caixa = CtrCaixa.instancia().searchByToday();
-        CtrCaixa.finaliza();
         
-        if(caixa != null)
+        if(CtrCaixa.instancia().isOpen(caixa))
             caixaOpen(caixa);
         else
             caixaClosed();
+        
+        CtrCaixa.finaliza();
     }
     
     @Override

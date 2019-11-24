@@ -31,7 +31,7 @@ public class CtrPedido
         instance = null;
     }
     
-    public Result insert(Object cliente, double peso, double entrega, ObservableList<Object> item)
+    public Result insert(Object cliente, double peso, double entrega, double total, ObservableList<Object> item)
     {
         Result result = new Result();
         Banco banco = Banco.conectar();
@@ -59,7 +59,11 @@ public class CtrPedido
                     }
 
                     if(comit)
+                    {
+                        CtrRecebimento.instancia().insert(total, pedido.getCodigo(), -1);
+                        
                         banco.getConnection().commit();
+                    }
                     else
                         banco.getConnection().rollback();
                 }

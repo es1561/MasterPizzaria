@@ -36,12 +36,26 @@ public class CtrCaixa
         
         try
         {
-            Caixa caixa = new Caixa(Date.valueOf(LocalDate.now()), Date.valueOf(LocalDate.now()), init, 0, 0);
+            boolean flag;
+            Caixa caixa = (Caixa) new Caixa().searchByToday();
+            
+            if(caixa == null)
+            {
+                flag = false;
+                caixa = new Caixa(Date.valueOf(LocalDate.now()), Date.valueOf(LocalDate.now()), init, 0, 0);
+            }
+            else
+            {
+                flag = true;
+                caixa.setDataFechamento(null);
+            }
             
             if(banco.isConnected())
             {
+                boolean comit = flag ? caixa.update() : caixa.insert();
+                
                 banco.getConnection().setAutoCommit(false);
-                if(caixa.insert())
+                if(comit)
                     banco.getConnection().commit();
                 else
                     banco.getConnection().rollback();
@@ -56,6 +70,7 @@ public class CtrCaixa
             result.setError(true);
             result.setMessage(ex.getMessage());
             System.out.println(ex.getMessage());
+            Banco.desconectar();
         }
         
         return result;
@@ -70,10 +85,12 @@ public class CtrCaixa
         {
             Caixa caixa = (Caixa)new Caixa().searchByToday();
             
+            caixa.setDataFechamento(Date.valueOf(LocalDate.now()));
+            
             if(banco.isConnected())
             {
                 banco.getConnection().setAutoCommit(false);
-                if(caixa.close())
+                if(caixa.update())
                     banco.getConnection().commit();
                 else
                     banco.getConnection().rollback();
@@ -88,6 +105,7 @@ public class CtrCaixa
             result.setError(true);
             result.setMessage(ex.getMessage());
             System.out.println(ex.getMessage());
+            Banco.desconectar();
         }
         
         return result;
@@ -135,8 +153,14 @@ public class CtrCaixa
         catch(SQLException ex)
         {
             System.out.println(ex.getMessage());
+            Banco.desconectar();
         }
         
         return result;
+    }
+    
+    public boolean isOpen(Object obj)
+    {
+        return ((Caixa)obj).getDataFechamento() == null;
     }
 }
