@@ -60,9 +60,10 @@ public class CtrPedido
 
                     if(comit)
                     {
-                        CtrRecebimento.instancia().insert(total, pedido.getCodigo(), -1);
-                        
-                        banco.getConnection().commit();
+                        if(!CtrRecebimento.instancia().insert(total, pedido.getCodigo(), -1).isError())                        
+                            banco.getConnection().commit();
+                        else
+                            banco.getConnection().rollback();
                     }
                     else
                         banco.getConnection().rollback();
@@ -70,7 +71,6 @@ public class CtrPedido
                 else
                     banco.getConnection().rollback();
 
-                Banco.desconectar();
             }
             else
                 throw new SQLException("Banco Off-Line");
@@ -81,6 +81,8 @@ public class CtrPedido
             result.setMessage(ex.getMessage());
             System.out.println(ex.getMessage());
         }
+        
+        Banco.desconectar();
         
         return result;
     }

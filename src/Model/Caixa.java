@@ -86,6 +86,14 @@ public class Caixa
 
     public double getEntrada()
     {
+        entrada = 0;
+        
+        for(Movimento movimento: movimentos)
+        {
+            if(movimento.getTipo() == 1)
+                entrada += movimento.getValor();
+        }
+        
         return entrada;
     }
 
@@ -96,6 +104,14 @@ public class Caixa
 
     public double getSaida()
     {
+        saida = 0;
+        
+        for(Movimento movimento: movimentos)
+        {
+            if(movimento.getTipo() == 2)
+                saida += movimento.getValor();
+        }
+        
         return saida;
     }
 
@@ -206,7 +222,11 @@ public class Caixa
             ResultSet rs = statement.executeQuery();
             
             if(rs.next())
+            {
                 obj = new Caixa(rs.getDate("caixa_data_a"), rs.getDate("caixa_data_a"), rs.getDate("caixa_data_f"), rs.getDouble("caixa_valor_a"), rs.getDouble("caixa_entrada"), rs.getDouble("caixa_saida"));
+                
+                obj.setMovimentos(new Movimento().cast(new Movimento(obj).searchByDate()));
+            }
         }
         catch(SQLException ex)
         {

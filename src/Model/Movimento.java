@@ -162,15 +162,15 @@ public class Movimento
         statement.setDate(4, Date.valueOf(LocalDate.now()));
         statement.setDouble(5, valor);
         
-        if(pedido != null)
+        if(pedido.getCodigo() >= 0)
             statement.setInt(6, pedido.getCodigo());
         else
-            statement.setNull(6, Types.INTEGER);
+            statement.setNull(6, Types.NULL);
 
-        if(compra != null)
+        if(compra.getCodigo() >= 0)
             statement.setInt(7, compra.getCodigo());
         else
-            statement.setNull(7, Types.INTEGER);
+            statement.setNull(7, Types.NULL);
         
         return statement.executeUpdate() > 0;
     }
@@ -247,5 +247,17 @@ public class Movimento
         }
         
         return list;
+    }
+    
+    public ObservableList<Movimento> cast(ObservableList<Object> list)
+    {
+        ObservableList<Movimento> result = FXCollections.observableArrayList();
+        
+        for(Object object: list)
+        {
+            result.add((Movimento) object);
+        }
+        
+        return result;
     }
 }
