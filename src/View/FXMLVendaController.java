@@ -5,6 +5,7 @@
  */
 package View;
 
+import Controll.CtrCaixa;
 import Controll.CtrCliente;
 import Controll.CtrItemPedido;
 import Controll.CtrPedido;
@@ -152,20 +153,34 @@ public class FXMLVendaController implements Initializable
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
-        // TODO
-        c_cod.setCellValueFactory(new PropertyValueFactory<Object,Integer>("codigo"));
-        c_cliente.setCellValueFactory(new PropertyValueFactory<Object,String>("cliente"));
-        c_peso.setCellValueFactory(new PropertyValueFactory<Object,Double>("peso"));
-        c_entrega.setCellValueFactory(new PropertyValueFactory<Object,Double>("entrega"));
-        c_valor.setCellValueFactory(new PropertyValueFactory<Object,Double>("valor"));
+        Object caixa = CtrCaixa.instancia().searchByToday();
         
-        cb_cliente.setItems(CtrCliente.instancia().searchAll());
-        CtrCliente.finaliza();
+        if(caixa != null && CtrCaixa.instancia().isOpen(caixa))
+        {
+            c_cod.setCellValueFactory(new PropertyValueFactory<Object,Integer>("codigo"));
+            c_cliente.setCellValueFactory(new PropertyValueFactory<Object,String>("cliente"));
+            c_peso.setCellValueFactory(new PropertyValueFactory<Object,Double>("peso"));
+            c_entrega.setCellValueFactory(new PropertyValueFactory<Object,Double>("entrega"));
+            c_valor.setCellValueFactory(new PropertyValueFactory<Object,Double>("valor"));
+
+            cb_cliente.setItems(CtrCliente.instancia().searchAll());
+            CtrCliente.finaliza();
+
+            cb_produto.setItems(CtrProduto.instancia().searchAll());
+            CtrProduto.finaliza();
+            CtrCaixa.finaliza();
+            
+            reset();
+        }
+        else
+        {
+            disableButtons(true);
+            disableFields(true);
+            disableSearch(true);
+            
+            btn_limpa.setDisable(true);
+        }
         
-        cb_produto.setItems(CtrProduto.instancia().searchAll());
-        CtrProduto.finaliza();
-        
-        reset();
     }    
 
     @FXML

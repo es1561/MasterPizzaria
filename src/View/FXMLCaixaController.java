@@ -111,7 +111,7 @@ public class FXMLCaixaController implements Initializable
     {
         Object caixa = CtrCaixa.instancia().searchByToday();
         
-        if(CtrCaixa.instancia().isOpen(caixa))
+        if(caixa != null && CtrCaixa.instancia().isOpen(caixa))
             caixaOpen(caixa);
         else
             caixaClosed();
