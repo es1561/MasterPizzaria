@@ -9,6 +9,7 @@ CREATE TABLE public.Fornecedor (
 
 CREATE TABLE public.Compra (
                 comp_cod INTEGER NOT NULL,
+                comp_data DATE NOT NULL,
                 for_cod INTEGER NOT NULL,
                 CONSTRAINT pk_compra PRIMARY KEY (comp_cod)
 );
@@ -99,9 +100,9 @@ CREATE TABLE public.ItemCompra (
 
 CREATE TABLE public.ItemPedido (
                 prod_cod INTEGER NOT NULL,
-                itemp_quant INTEGER NOT NULL,
                 ped_cod INTEGER NOT NULL,
-                CONSTRAINT pk_itempedido PRIMARY KEY (prod_cod)
+                itemp_quant INTEGER NOT NULL,
+                CONSTRAINT pk_itempedido PRIMARY KEY (prod_cod, ped_cod)
 );
 
 
@@ -168,14 +169,14 @@ ON DELETE NO ACTION
 ON UPDATE NO ACTION
 NOT DEFERRABLE;
 
-ALTER TABLE public.ItemPedido ADD CONSTRAINT pedido_itempedido_fk
+ALTER TABLE public.Movimento ADD CONSTRAINT pedido_movimento_fk
 FOREIGN KEY (ped_cod)
 REFERENCES public.Pedido (ped_cod)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION
 NOT DEFERRABLE;
 
-ALTER TABLE public.Movimento ADD CONSTRAINT pedido_movimento_fk
+ALTER TABLE public.ItemPedido ADD CONSTRAINT pedido_itempedido_fk
 FOREIGN KEY (ped_cod)
 REFERENCES public.Pedido (ped_cod)
 ON DELETE NO ACTION

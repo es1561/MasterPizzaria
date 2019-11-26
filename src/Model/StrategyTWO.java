@@ -8,7 +8,7 @@ public class StrategyTWO implements Strategy
     @Override
     public double execute(double peso)
     {
-        return 0.99;
+        return 2.99;
     }
     
 }

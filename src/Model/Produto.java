@@ -175,7 +175,7 @@ public class Produto
 
             ResultSet rs = statement.executeQuery();
             
-            if(rs.next())
+            while(rs.next())
             {
                 Categoria cat = (Categoria)new Categoria(rs.getInt("cat_cod")).searchByCodigo();
                 list.add(new Produto(rs.getInt("prod_cod"), rs.getString("prod_nome"), rs.getDouble("prod_valor"), rs.getDouble("prod_peso"), cat));

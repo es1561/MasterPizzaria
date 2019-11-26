@@ -88,7 +88,7 @@ public class FXMLDocumentController implements Initializable
     {
         resetButton();
         btn_compra.setStyle("-fx-background-color:" + fore_color);
-        
+        loadNode("FXMLCompra.fxml");
     }
 
     @FXML
