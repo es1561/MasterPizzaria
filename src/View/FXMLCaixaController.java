@@ -129,7 +129,7 @@ public class FXMLCaixaController implements Initializable
     @FXML
     private void ClickAbrir(ActionEvent event)
     {
-        CtrCaixa.instancia().open(900);
+        CtrCaixa.instancia().open(200);
         CtrCaixa.finaliza();
         refresh();
     }

@@ -2,19 +2,21 @@ package Controll;
 
 import GoF.Template;
 import Model.Movimento;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
-public class CtrPagamneto extends Template
+public class CtrPagamento extends Template
 {
-    private static CtrPagamneto instance;
+    private static CtrPagamento instance;
     
-    private CtrPagamneto()
+    private CtrPagamento()
     {
     }
             
-    public static CtrPagamneto instancia()
+    public static CtrPagamento instancia()
     {
         if(instance == null)
-            instance = new CtrPagamneto();
+            instance = new CtrPagamento();
             
         return instance;
     }
@@ -33,6 +35,9 @@ public class CtrPagamneto extends Template
         {
             mov.setTipo(2);
             flag = mov.getCaixa().checkBalance(mov.getValor()) ? mov.insert() : false;
+            
+            if(!flag)
+                new Alert(Alert.AlertType.ERROR, "Saldo insuficiente no caixa !", ButtonType.OK).showAndWait();
         }
         catch(Exception ex)
         {

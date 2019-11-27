@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package Model;
 
 import DataBase.Banco;
@@ -8,54 +13,58 @@ import java.sql.SQLException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class ItemPedido
+/**
+ *
+ * @author Aluno
+ */
+public class ItemCompra
 {
-    private Pedido pedido;
+    private Compra compra;
     private Produto produto;
     private int quant;
 
-    public ItemPedido()
+    public ItemCompra()
     {
     }
 
-    public ItemPedido(Pedido pedido)
-    {
-        this.pedido = pedido;
-    }
-
-    public ItemPedido(Produto produto)
+    public ItemCompra(Produto produto)
     {
         this.produto = produto;
     }
 
-    public ItemPedido(Produto produto, int quant)
+    public ItemCompra(Compra compra)
+    {
+        this.compra = compra;
+    }
+
+    public ItemCompra(Produto produto, int quant)
     {
         this.produto = produto;
         this.quant = quant;
     }
-    
-    public ItemPedido(Pedido pedido, Produto produto)
+
+    public ItemCompra(Compra compra, Produto produto)
     {
-        this.pedido = pedido;
+        this.compra = compra;
         this.produto = produto;
         this.quant = 1;
     }
 
-    public ItemPedido(Pedido pedido, Produto produto, int quant)
+    public ItemCompra(Compra compra, Produto produto, int quant)
     {
-        this.pedido = pedido;
+        this.compra = compra;
         this.produto = produto;
         this.quant = quant;
     }
 
-    public Pedido getPedido()
+    public Compra getCompra()
     {
-        return pedido;
+        return compra;
     }
 
-    public void setPedido(Pedido pedido)
+    public void setCompra(Compra compra)
     {
-        this.pedido = pedido;
+        this.compra = compra;
     }
 
     public Produto getProduto()
@@ -77,16 +86,16 @@ public class ItemPedido
     {
         this.quant = quant;
     }
-    
+
     public boolean insert() throws SQLException
     {
-        String sql = "INSERT INTO ItemPedido(ped_cod, prod_cod, itemp_quant) ";
+        String sql = "INSERT INTO ItemCompra(comp_cod, prod_cod, itemc_quant) ";
         String values = "VALUES(?, ?, ?)";
         
         Connection connection = Banco.getInstance().getConnection();
         PreparedStatement statement = connection.prepareStatement(sql + values);
 
-        statement.setInt(1, pedido.getCodigo());
+        statement.setInt(1, compra.getCodigo());
         statement.setInt(2, produto.getCodigo());
         statement.setInt(3, quant);
         
@@ -95,13 +104,13 @@ public class ItemPedido
     
     public boolean update() throws SQLException
     {
-        String sql = "UPDATE ItemPedido SET itemp_quant = ? WHERE ped_cod = ? AND prod_cod = ?";
+        String sql = "UPDATE ItemCompra SET itemc_quant = ? WHERE comp_cod = ? AND prod_cod = ?";
         
         Connection connection = Banco.getInstance().getConnection();
         PreparedStatement statement = connection.prepareStatement(sql);
 
         statement.setInt(1, quant);
-        statement.setInt(2, pedido.getCodigo());
+        statement.setInt(2, compra.getCodigo());
         statement.setInt(3, produto.getCodigo());
 
         return statement.executeUpdate() > 0;
@@ -109,21 +118,21 @@ public class ItemPedido
     
     public boolean delete() throws SQLException
     {
-        String sql = "DELETE FROM ItemPedido WHERE ped_cod = ? AND prod_cod = ?";
+        String sql = "DELETE FROM ItemPedido WHERE comp_cod = ? AND prod_cod = ?";
         
         Connection connection = Banco.getInstance().getConnection();
         PreparedStatement statement = connection.prepareStatement(sql);
 
-        statement.setInt(1, pedido.getCodigo());
+        statement.setInt(1, compra.getCodigo());
         statement.setInt(2, produto.getCodigo());
 
         return statement.executeUpdate() > 0;
     }
     
-    public ObservableList<Object> searchByPedido()
+    public ObservableList<Object> searchByCompra()
     {
         ObservableList<Object> list = FXCollections.observableArrayList();
-        String sql = "SELECT * FROM ItemPedido WHERE ped_cod = " + pedido.getCodigo();
+        String sql = "SELECT * FROM ItemCompra WHERE comp_cod = " + compra.getCodigo();
         
         try
         {
@@ -135,7 +144,7 @@ public class ItemPedido
             while(rs.next())
             {
                 Produto prod = (Produto)new Produto(rs.getInt("prod_cod")).searchByCodigo();
-                ItemPedido obj = new ItemPedido(pedido, prod, rs.getInt("itemp_quant"));
+                ItemCompra obj = new ItemCompra(compra, prod, rs.getInt("itemc_quant"));
 
                 list.add(obj);
             }

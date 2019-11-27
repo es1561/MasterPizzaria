@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class Fornecedor
@@ -120,5 +121,33 @@ public class Fornecedor
         }
         
         return obj;
+    }
+    
+    public ObservableList<Fornecedor> searchAll()
+    {
+        ObservableList<Fornecedor> list = FXCollections.observableArrayList();
+        String sql = "SELECT * FROM Fornecedor";
+        
+        try
+        {
+            Connection connection = Banco.getInstance().getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql);
+
+            ResultSet rs = statement.executeQuery();
+            
+            while(rs.next())
+                list.add(new Fornecedor(rs.getInt("for_cod"), rs.getString("for_nome"), rs.getString("for_fone")));
+        }
+        catch(SQLException ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+        
+        return list;
+    }
+    
+    public String toString()
+    {
+        return nome + "(" + fone + ")";
     }
 }

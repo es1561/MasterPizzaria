@@ -211,8 +211,6 @@ public class FXMLVendaController implements Initializable
     @FXML
     private void ClickApagar(ActionEvent event)
     {
-        
-        
         reset();
     }
 
