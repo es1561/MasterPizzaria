@@ -16,6 +16,7 @@ public class Compra
     private int codigo;
     private Fornecedor fornecedor;
     private Date data;
+    private double valor;
     private ObservableList<ItemCompra> itens;
 
     public Compra()
@@ -37,6 +38,13 @@ public class Compra
         this.codigo = codigo;
         this.fornecedor = fornecedor;
         this.data = data;
+    }
+
+    public Compra(int codigo, Fornecedor fornecedor, double valor)
+    {
+        this.codigo = codigo;
+        this.fornecedor = fornecedor;
+        this.valor = valor;
     }
 
     public Compra(int codigo, Fornecedor fornecedor, Date data, ObservableList<ItemCompra> itens)
@@ -77,6 +85,23 @@ public class Compra
         this.data = data;
     }
 
+    public double getValor()
+    {
+        if(itens != null)
+        {
+            valor = 0;
+            for(ItemCompra iten: itens)
+                valor += iten.getQuant() * iten.getProduto().getValor();
+        }
+        
+        return valor;
+    }
+
+    public ObservableList<ItemCompra> getItens()
+    {
+        return itens;
+    }
+    
     public boolean insert() throws SQLException
     {
         String sql = "INSERT INTO Compra(comp_cod, comp_data, for_cod) ";
@@ -95,7 +120,7 @@ public class Compra
     
     public boolean update() throws SQLException
     {
-        String sql = "INSERT INTO Compra SET for_cod = ? WHERE comp_cod = " + codigo;
+        String sql = "UPDATE Compra SET for_cod = ? WHERE comp_cod = " + codigo;
 
         Connection connection = Banco.getInstance().getConnection();
         PreparedStatement statement = connection.prepareStatement(sql);

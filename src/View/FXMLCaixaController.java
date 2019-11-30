@@ -17,6 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 /**
  * FXML Controller class
@@ -77,7 +78,7 @@ public class FXMLCaixaController implements Initializable
         lb_entrada.setText("Entrada: $ +" + CtrCaixa.instancia().get(caixa, "entrada"));
         lb_saida.setText("Saida: $ -" + CtrCaixa.instancia().get(caixa, "saida"));
         lb_balanca.setText("Balança: $ " + CtrCaixa.instancia().get(caixa, "balanca"));
-        lb_data.setText("DATA" + CtrCaixa.instancia().get(caixa, "data"));
+        lb_data.setText(CtrCaixa.instancia().get(caixa, "data"));
         
         CtrCaixa.finaliza();
     }
@@ -116,6 +117,8 @@ public class FXMLCaixaController implements Initializable
         else
             caixaClosed();
         
+        table_caixa.setItems(CtrCaixa.instancia().searchAll());
+        
         CtrCaixa.finaliza();
     }
     
@@ -123,6 +126,14 @@ public class FXMLCaixaController implements Initializable
     public void initialize(URL url, ResourceBundle rb)
     {
         // TODO
+        
+        c_data.setCellValueFactory(new PropertyValueFactory<Object,String>("data"));
+        c_abertura.setCellValueFactory(new PropertyValueFactory<Object,String>("dataAbertura"));
+        c_fechamento.setCellValueFactory(new PropertyValueFactory<Object,String>("dataFechamento"));
+        c_valor.setCellValueFactory(new PropertyValueFactory<Object,Double>("valorAbertura"));
+        c_entrada.setCellValueFactory(new PropertyValueFactory<Object,Double>("entrada"));
+        c_saida.setCellValueFactory(new PropertyValueFactory<Object,Double>("saida"));
+        
         refresh();
     }    
 

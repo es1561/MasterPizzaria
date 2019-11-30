@@ -16,6 +16,7 @@ public class Pedido
     private Cliente cliente;
     private double peso;
     private double entrega;
+    private double valor;
     private ObservableList<ItemPedido> itens;
 
     public Pedido()
@@ -113,6 +114,18 @@ public class Pedido
     public double getEntrega()
     {
         return entrega;
+    }
+    
+    public double getValor()
+    {
+        if(itens != null)
+        {
+            valor = 0;
+            for(ItemPedido iten: itens)
+                valor += iten.getQuant() * iten.getProduto().getValor();
+        }
+        
+        return valor;
     }
     
     public boolean insert() throws SQLException

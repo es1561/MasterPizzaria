@@ -129,6 +129,18 @@ public class ItemCompra
         return statement.executeUpdate() > 0;
     }
     
+    public boolean deleteAllByCompra() throws SQLException
+    {
+        String sql = "DELETE FROM ItemCompra WHERE comp_cod = ?";
+        
+        Connection connection = Banco.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(sql);
+
+        statement.setInt(1, compra.getCodigo());
+
+        return statement.executeUpdate() > 0;
+    }
+    
     public ObservableList<Object> searchByCompra()
     {
         ObservableList<Object> list = FXCollections.observableArrayList();

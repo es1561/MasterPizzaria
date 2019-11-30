@@ -22,6 +22,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 
 /**
  * FXML Controller class
@@ -253,6 +254,11 @@ public class FXMLVendaController implements Initializable
     {
         table_pedido.setItems(CtrPedido.instancia().searchAll());
         CtrPedido.finaliza();
+    }
+
+    @FXML
+    private void ClickTable(MouseEvent event)
+    {
     }
     
 }

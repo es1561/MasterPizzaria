@@ -6,6 +6,8 @@ import Utils.Result;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class CtrCaixa 
 {
@@ -144,6 +146,31 @@ public class CtrCaixa
             if(banco.isConnected())
             {
                 result = new Caixa().searchByToday();
+
+                Banco.desconectar();
+            }
+            else
+                throw new SQLException("Banco Off-Line...");
+        }
+        catch(SQLException ex)
+        {
+            System.out.println(ex.getMessage());
+            Banco.desconectar();
+        }
+        
+        return result;
+    }
+    
+    public ObservableList<Object> searchAll()
+    {
+        ObservableList<Object> result = FXCollections.observableArrayList();
+        Banco banco = Banco.conectar();
+        
+        try
+        {
+            if(banco.isConnected())
+            {
+                result = new Caixa().searchAll();
 
                 Banco.desconectar();
             }

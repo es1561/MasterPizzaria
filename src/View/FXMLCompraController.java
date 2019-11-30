@@ -23,6 +23,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 
 /**
  * FXML Controller class
@@ -31,6 +32,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
  */
 public class FXMLCompraController implements Initializable
 {
+    private Object selected_item;
+    
     @FXML
     private Button btn_novo;
     @FXML
@@ -100,6 +103,12 @@ public class FXMLCompraController implements Initializable
         list_item.getItems().clear();
     }
     
+    private void loadFields()
+    {
+        CtrCompra.instancia().load(selected_item, cb_fornecedor, tb_total, list_item);
+        CtrCompra.finaliza();
+    }
+    
     private void unlockNovo()
     {
         disableButtons(true);
@@ -110,6 +119,16 @@ public class FXMLCompraController implements Initializable
         
         btn_novo.setDisable(false);
         btn_novo.setText("Salvar");
+    }
+    
+    private void unlockEditar()
+    {
+        disableButtons(true);
+        disableFields(false);
+        disableSearch(true);
+        
+        btn_editar.setDisable(false);
+        btn_editar.setText("Salvar");
     }
     
     private void reset()
@@ -124,6 +143,7 @@ public class FXMLCompraController implements Initializable
         btn_apagar.setDisable(true);
         
         btn_novo.setText("Novo");
+        btn_editar.setText("Editar");
     }
     
     private void refreshPedido()
@@ -189,7 +209,19 @@ public class FXMLCompraController implements Initializable
     @FXML
     private void ClickEditar(ActionEvent event)
     {
-        
+        if(btn_editar.getText().compareTo("Editar") != 0)
+        {
+            Object forn = cb_fornecedor.getValue();
+            double total = Double.valueOf(tb_total.getText());
+            
+            CtrCompra.instancia().update(CtrCompra.instancia().getCodigo(selected_item), forn, list_item.getItems(), total);
+            CtrCompra.finaliza();
+            
+            reset();
+            selected_item = table_pedido.getSelectionModel().getSelectedItem();
+        }
+        else
+            unlockEditar();
     }
 
     @FXML
@@ -237,6 +269,19 @@ public class FXMLCompraController implements Initializable
     {
         table_pedido.setItems(CtrCompra.instancia().searchAll());
         CtrCompra.finaliza();
+    }
+
+    @FXML
+    private void ClickTable(MouseEvent event)
+    {
+        if(table_pedido.getSelectionModel().getSelectedIndex() >= 0)
+        {
+            selected_item = table_pedido.getSelectionModel().getSelectedItem();
+            loadFields();
+            disableButtons(true);
+            btn_editar.setDisable(false);
+            btn_apagar.setDisable(false);
+        }
     }
     
 }

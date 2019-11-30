@@ -75,7 +75,7 @@
                   </Button>
                </children>
             </HBox>
-            <TableView fx:id="table_pedido" prefHeight="200.0" prefWidth="500.0">
+            <TableView fx:id="table_pedido" onMouseClicked="#ClickTable" prefHeight="200.0" prefWidth="500.0">
               <columns>
                 <TableColumn fx:id="c_cod" editable="false" prefWidth="75.0" resizable="false" sortable="false" text="Nº" />
                 <TableColumn fx:id="c_fornecedor" editable="false" prefWidth="200.0" resizable="false" sortable="false" text="Fornecedor" />
