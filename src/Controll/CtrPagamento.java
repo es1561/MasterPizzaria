@@ -1,7 +1,10 @@
 package Controll;
 
+import DataBase.Banco;
 import GoF.Template;
+import Model.Compra;
 import Model.Movimento;
+import java.sql.SQLException;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
@@ -24,6 +27,29 @@ public class CtrPagamento extends Template
     public static void finaliza()
     {
         instance = null;
+    }
+    
+    public Object searchByCompra(int comp_cod)
+    {
+        Banco banco = Banco.conectar();
+        Movimento mov = null;
+        
+        try
+        {
+            if(banco.isConnected())
+            {
+                mov = (Movimento)new Movimento(new Compra(comp_cod)).searchByCompra();
+                Banco.desconectar();
+            }
+            else
+                throw new SQLException("Banco Off-Line...");
+        }
+        catch(SQLException ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+        
+        return mov;
     }
     
     @Override

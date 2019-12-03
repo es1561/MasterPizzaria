@@ -4,6 +4,7 @@ import DataBase.Banco;
 import Model.Compra;
 import Model.Fornecedor;
 import Model.ItemCompra;
+import Model.Movimento;
 import Utils.Result;
 import java.sql.SQLException;
 import javafx.collections.FXCollections;
@@ -116,7 +117,9 @@ public class CtrCompra
 
                     if(comit)
                     {
-                        if(!CtrPagamento.instancia().insert(total, -1, compra.getCodigo()).isError())                        
+                        Movimento mov = (Movimento) CtrPagamento.instancia().searchByCompra(comp_cod);
+                        
+                        if(!CtrPagamento.instancia().update(mov.getCodigo(), mov.getCaixa().getData(), 2, total, -1, compra.getCodigo()).isError())                        
                             banco.getConnection().commit();
                         else
                             banco.getConnection().rollback();

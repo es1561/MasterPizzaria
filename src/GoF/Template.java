@@ -53,9 +53,9 @@ public abstract class Template
         
         try
         {
-            Caixa caixa = null;
-            Pedido ped = null;
-            Compra comp = null;
+            Caixa caixa = (Caixa) new Caixa(cixa_data).searchByData();
+            Pedido ped = ped_cod != -1 ? (Pedido) new Pedido(ped_cod).searchByCodigo() : null;
+            Compra comp = com_cod != -1 ? (Compra) new Compra(com_cod).searchByCodigo() : null;
             Movimento mov = new Movimento(com_cod, tipo, valor, caixa, ped, comp);
             
             if(banco.isConnected())

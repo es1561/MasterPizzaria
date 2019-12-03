@@ -26,6 +26,11 @@ public class Caixa
     {
     }
 
+    public Caixa(Date data)
+    {
+        this.data = data;
+    }
+    
     public Caixa(Date data, Date dataAbertura, double valorAbertura, double entrada, double saida)
     {
         this.data = data;
@@ -237,6 +242,34 @@ public class Caixa
         return obj;
     }
 
+    public Object searchByData()
+    {
+        Caixa obj = null;
+        String sql = "SELECT * FROM Caixa WHERE caixa_data = ?";
+
+        try
+        {
+            Connection connection = Banco.getInstance().getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql);
+
+            statement.setDate(1, data);
+
+            ResultSet rs = statement.executeQuery();
+
+            if(rs.next())
+            {
+                obj = new Caixa(rs.getDate("caixa_data_a"), rs.getDate("caixa_data_a"), rs.getDate("caixa_data_f"), rs.getDouble("caixa_valor_a"), rs.getDouble("caixa_entrada"), rs.getDouble("caixa_saida"));
+
+                obj.setMovimentos(new Movimento().cast(new Movimento(obj).searchByDate()));
+            }
+        }catch(SQLException ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+
+        return obj;
+    }
+    
     public ObservableList<Object> searchAll()
     {
         ObservableList<Object> obj = FXCollections.observableArrayList();
